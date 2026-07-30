@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -14,6 +15,8 @@ DATA_PATH = APP_DIR / "mock_posts.csv"
 DISCORD_DATA_PATH = APP_DIR / "discord_posts.csv"
 ENV_PATH = APP_DIR / ".env"
 DEFAULT_GEMINI_MODEL = "gemini-1.5-flash"
+DEFAULT_DISCORD_SYNC_LIMIT = "50"
+DEFAULT_DISCORD_SYNC_INTERVAL_SECONDS = "120"
 REQUIRED_COLUMNS = [
     "post_id",
     "title",
@@ -39,6 +42,15 @@ WEIGHTS = {
     "watch_time_score": 0.25,
     "completion_score": 0.10,
     "save_share_score": 0.10,
+}
+
+METRIC_DETAILS = {
+    "click_score": ("Click", "clicks", "Số lượt bấm/xem bài"),
+    "like_score": ("Like", "likes", "Số lượt like"),
+    "heart_score": ("Tim", "hearts", "Số lượt thả tim"),
+    "watch_time_score": ("Thời lượng xem", "watch_time_sec", "Tổng thời lượng xem ước tính"),
+    "completion_score": ("Tỷ lệ xem hết", "completion_percent", "Phần trăm người xem hết nội dung"),
+    "save_share_score": ("Lưu/Chia sẻ", "save_shares", "Số lượt lưu hoặc chia sẻ"),
 }
 
 st.set_page_config(
@@ -106,6 +118,48 @@ def get_config_value(key: str, default: str | None = None) -> str | None:
     except Exception:
         secret_value = None
     return secret_value or os.getenv(key) or load_local_env().get(key) or default
+
+
+def has_discord_config() -> bool:
+    token = get_config_value("DISCORD_BOT_TOKEN")
+    channel_id = get_config_value("DISCORD_CHANNEL_ID")
+    channel_ids = get_config_value("DISCORD_CHANNEL_IDS")
+    return bool(token and token != "your_discord_bot_token_here" and (channel_id or channel_ids))
+
+
+def get_int_config(key: str, default: str) -> int:
+    try:
+        return int(get_config_value(key, default) or default)
+    except ValueError:
+        return int(default)
+
+
+def auto_sync_discord() -> None:
+    if not has_discord_config():
+        return
+
+    sync_interval = max(
+        30,
+        get_int_config("DISCORD_SYNC_INTERVAL_SECONDS", DEFAULT_DISCORD_SYNC_INTERVAL_SECONDS),
+    )
+    last_sync_at = float(st.session_state.get("discord_last_sync_at", 0))
+    now = time.time()
+    if now - last_sync_at < sync_interval:
+        return
+
+    st.session_state.discord_last_sync_at = now
+    sync_limit = get_int_config("DISCORD_SYNC_LIMIT", DEFAULT_DISCORD_SYNC_LIMIT)
+
+    try:
+        from discord_bot import sync_discord_posts_to_csv
+
+        with st.spinner("Đang đồng bộ dữ liệu Discord..."):
+            synced_posts = sync_discord_posts_to_csv(limit=sync_limit)
+        load_posts.clear()
+        if synced_posts:
+            st.toast(f"Đã đồng bộ {len(synced_posts)} bài từ Discord.")
+    except Exception as exc:
+        st.warning(f"Không đồng bộ được Discord: {exc}")
 
 
 def normalize(series: pd.Series) -> pd.Series:
@@ -269,6 +323,37 @@ def get_ranked_posts_for_query(df: pd.DataFrame, query: str, limit: int = 3) -> 
     return candidates.sort_values(["quality_score", "match_score"], ascending=False).head(limit)
 
 
+def render_score_detail(row: pd.Series) -> None:
+    rows = []
+    for score_column, weight in WEIGHTS.items():
+        label, raw_column, description = METRIC_DETAILS[score_column]
+        raw_value = row[raw_column]
+        if raw_column == "completion_percent":
+            raw_display = f"{float(raw_value):.0f}%"
+        elif raw_column == "watch_time_sec":
+            raw_display = f"{int(float(raw_value))} giây"
+        else:
+            raw_display = str(int(float(raw_value)))
+
+        score = float(row[score_column])
+        rows.append(
+            {
+                "Tín hiệu": label,
+                "Dữ liệu gốc": raw_display,
+                "Điểm 0-100": round(score, 1),
+                "Trọng số": f"{int(weight * 100)}%",
+                "Đóng góp": round(score * weight, 1),
+                "Ý nghĩa": description,
+            }
+        )
+
+    st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+    st.caption(
+        "Công thức: Click 20% + Like 15% + Tim 20% + Thời lượng xem 25% + "
+        "Tỷ lệ xem hết 10% + Lưu/Chia sẻ 10%."
+    )
+
+
 def render_post_result(row: pd.Series, rank: int) -> None:
     metadata = get_display_metadata(row)
     tags = " ".join(f"`{tag}`" for tag in metadata["tags"])
@@ -279,6 +364,8 @@ def render_post_result(row: pd.Series, rank: int) -> None:
     if tags:
         st.markdown(tags)
     st.markdown(f"[Mở bài gốc]({row['url']})")
+    with st.expander("Xem chi tiết chấm điểm"):
+        render_score_detail(row)
 
 
 def render_chatbot_tab(df: pd.DataFrame) -> None:
@@ -367,6 +454,7 @@ def inject_css() -> None:
 
 def main() -> None:
     inject_css()
+    auto_sync_discord()
     df = load_posts()
 
     st.title("Trợ lý tổng hợp bài đăng chất lượng")

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trợ lý tổng hợp bài đăng chất lượng</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="chat-panel" aria-label="Chatbot tìm bài đăng chất lượng">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">Discord Quality Digest</p>
+            <h1>Trợ lý tổng hợp bài đăng chất lượng</h1>
+            <p class="subtitle">Hỏi một chủ đề, bot trả top 3 bài liên quan có điểm chất lượng cao nhất.</p>
+          </div>
+          <div class="status-card" id="statusCard">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="statusText">Đang kiểm tra dữ liệu...</span>
+          </div>
+        </header>
+
+        <div class="suggestions" aria-label="Câu hỏi gợi ý">
+          <button type="button" data-query="tìm bài hay về RAG và prompt">RAG và prompt</button>
+          <button type="button" data-query="bài viết về golden set và đánh giá chatbot">eval chatbot</button>
+          <button type="button" data-query="thiết kế UX khi AI không chắc">UX khi AI không chắc</button>
+        </div>
+
+        <section class="messages" id="messages" aria-live="polite">
+          <article class="message assistant">
+            <div class="bubble">Bạn muốn tìm bài đăng chất lượng về chủ đề gì?</div>
+          </article>
+        </section>
+
+        <form class="composer" id="chatForm">
+          <input
+            id="queryInput"
+            name="query"
+            autocomplete="off"
+            placeholder="Nhập chủ đề bạn muốn tìm..."
+            aria-label="Nhập chủ đề bạn muốn tìm"
+          />
+          <button type="submit">Gửi</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
