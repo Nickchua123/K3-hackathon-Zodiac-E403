@@ -29,3 +29,6 @@ Thumbs.db
 *.log
 tmp/
 temp/
+
+# Runtime data synced from real Discord
+codebase/discord_posts.csv
