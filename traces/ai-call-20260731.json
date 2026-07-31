@@ -1,0 +1,41 @@
+{
+  "status": "success",
+  "is_real_ai": true,
+  "started_at": "2026-07-31T10:11:51.132998+07:00",
+  "finished_at": "2026-07-31T10:11:52.504339+07:00",
+  "latency_ms": 1370,
+  "purpose": "Tóm tắt và gắn chủ đề/tag cho bài đăng trước khi lập chỉ mục",
+  "decision_role": "AI enrichment trong background workflow",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "input": {
+    "source": "codebase/mock_posts.csv",
+    "post_id": "P001",
+    "title": "Checklist prompt RAG trước khi nộp bài",
+    "content_included_in_trace": false,
+    "sha256": "2fbe19a737a9feaaa4644ef7a3efe5626ebe9e98f8a3263e70d704084b914133"
+  },
+  "prompt_version": "codebase/ai_analyzer.py",
+  "output": {
+    "summary": "Bài viết cung cấp một checklist RAG toàn diện bao gồm tách câu hỏi, lấy context kèm citation, trả lời ngắn gọn theo nguồn và cơ chế fallback. Đây là công cụ hữu ích giúp học viên tự kiểm tra và test chatbot trước khi bước vào buổi demo.",
+    "topic": "RAG",
+    "tags": [
+      "RAG",
+      "Prompt Engineering",
+      "Checklist",
+      "Chatbot"
+    ],
+    "ai_quality_score": 85.0,
+    "key_takeaways": [
+      "Thực hiện tách câu hỏi để cải thiện khả năng truy xuất.",
+      "Lấy context có kèm citation để đảm bảo tính minh bạch của nguồn.",
+      "Thiết lập trả lời ngắn gọn theo đúng nguồn tài liệu và có cơ chế fallback khi không tìm thấy dữ liệu."
+    ]
+  },
+  "privacy": {
+    "discord_content_sent": false,
+    "api_key_recorded": false,
+    "author_recorded": false,
+    "url_recorded": false
+  }
+}

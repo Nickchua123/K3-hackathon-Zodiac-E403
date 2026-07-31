@@ -1,0 +1,19 @@
+{
+  "status": "template_not_executed",
+  "timestamp": null,
+  "purpose": "Tóm tắt và gắn chủ đề cho một bài mock",
+  "provider": null,
+  "model": null,
+  "input_source": "codebase/mock_posts.csv",
+  "input_post_id": null,
+  "input_redacted": true,
+  "prompt_version": "ai_analyzer.py",
+  "output": {
+    "summary": null,
+    "topic": null,
+    "tags": []
+  },
+  "latency_ms": null,
+  "error": null,
+  "notes": "Không ghi API key, token, author hoặc URL riêng tư."
+}

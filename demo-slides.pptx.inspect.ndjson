@@ -1,0 +1,117 @@
+{"kind":"deck","id":"pr/ss0wu1","name":"Deck"}
+{"kind":"layout","layoutId":"5884d67f-d4eb-443f-b0c2-ef60afb60b08","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"a686b3f2-4c27-42ee-bef9-2be8e7856321","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/fq3lh1","slide":1,"title":"QUALITY HUB · NHÓM 03","textShapes":6}
+{"kind":"shape","id":"sh/hofmx8vu","slide":1,"name":"title-accent","bbox":[64,86,86,7]}
+{"kind":"textbox","id":"sh/ulonmtcj","slide":1,"name":"eyebrow","text":"QUALITY HUB · NHÓM 03","textPreview":"QUALITY HUB · NHÓM 03","textChars":21,"textLines":1,"bbox":[64,110,430,28]}
+{"kind":"textbox","id":"sh/vmx4vydo","slide":1,"name":"title","text":"Tìm đúng bài Discord\nđáng đọc trong vài giây","textPreview":"Tìm đúng bài Discord | đáng đọc trong vài giây","textChars":44,"textLines":2,"bbox":[64,165,520,168]}
+{"kind":"textbox","id":"sh/8jm5kjud","slide":1,"name":"subtitle","text":"Trợ lý tổng hợp, xếp hạng và dẫn người học về đúng nguồn gốc.","textPreview":"Trợ lý tổng hợp, xếp hạng và dẫn người học về đúng nguồn gốc.","textChars":61,"textLines":1,"bbox":[64,365,500,72]}
+{"kind":"textbox","id":"sh/tkvmtovy","slide":1,"name":"tech-line","text":"SQLite  ·  Hybrid Search  ·  Background Workflow","textPreview":"SQLite  ·  Hybrid Search  ·  Background Workflow","textChars":48,"textLines":1,"bbox":[64,494,500,34]}
+{"kind":"shape","id":"sh/6x43itc7","slide":1,"name":"Ảnh giao diện Quality Hub-frame","bbox":[632,82,591,546]}
+{"kind":"textbox","id":"sh/sfq5wnuh","slide":1,"name":"footer-label-1","text":"AI Product Hackathon","textPreview":"AI Product Hackathon","textChars":20,"textLines":1,"bbox":[64,678,420,18]}
+{"kind":"textbox","id":"sh/dgz65sb2","slide":1,"name":"footer-page-1","text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1160,678,56,18]}
+{"kind":"image","id":"im/yhony18v","slide":1,"name":"","geometry":"roundRect","alt":"Ảnh giao diện Quality Hub","bbox":[640,90,575,530]}
+{"kind":"notes","id":"nt/fq3lh1","slide":1,"text":"Mở bằng pain: học viên nhớ chủ đề nhưng không nhớ bài nằm ở đâu.\nNêu rõ sản phẩm không trả lời thay bài viết; sản phẩm giúp tìm và kiểm chứng nguồn.\n\n[Sources]\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/README.md\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/demo-backup/01-dashboard.png\n[/Sources]"}
+{"kind":"slide","id":"sl/bgyi9s","slide":2,"title":"Lát cắt được chọn vì kết quả luôn kiểm chứng được","textShapes":14}
+{"kind":"textbox","id":"sh/5cnetkb6","slide":2,"name":"title","text":"Lát cắt được chọn vì kết quả luôn kiểm chứng được","textPreview":"Lát cắt được chọn vì kết quả luôn kiểm chứng được","textChars":49,"textLines":1,"bbox":[64,58,1120,58]}
+{"kind":"shape","id":"sh/i9wvipsf","slide":2,"name":"title-rule","bbox":[64,132,88,5]}
+{"kind":"textbox","id":"sh/ja5wrut0","slide":2,"name":"one-user","text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[72,190,100,90]}
+{"kind":"textbox","id":"sh/sfedozah","slide":2,"name":"slice","text":"học viên\n1 chủ đề\n1 quyết định AI\n1 link gốc","textPreview":"học viên | 1 chủ đề | 1 quyết định AI | 1 link gốc","textChars":44,"textLines":4,"bbox":[170,198,380,210]}
+{"kind":"textbox","id":"sh/tg7ex4b2","slide":2,"name":"decision-note","text":"Nếu xếp hạng chưa hoàn hảo, người học vẫn có thể mở nguồn và tự đánh giá.","textPreview":"Nếu xếp hạng chưa hoàn hảo, người học vẫn có thể mở nguồn và tự đánh giá.","textChars":73,"textLines":1,"bbox":[72,455,470,96]}
+{"kind":"shape","id":"sh/6dwvmpsr","slide":2,"name":"choice-1-rule","bbox":[620,200,8,92]}
+{"kind":"textbox","id":"sh/re5wvutc","slide":2,"name":"choice-1-label","text":"CHỌN","textPreview":"CHỌN","textChars":4,"textLines":1,"bbox":[650,196,120,28]}
+{"kind":"textbox","id":"sh/8judcfud","slide":2,"name":"choice-1-text","text":"Tìm bài Discord theo chủ đề","textPreview":"Tìm bài Discord theo chủ đề","textChars":27,"textLines":1,"bbox":[650,232,500,46]}
+{"kind":"shape","id":"sh/9k3el0by","slide":2,"name":"choice-2-rule","bbox":[620,330,8,92]}
+{"kind":"textbox","id":"sh/5cru9sjm","slide":2,"name":"choice-2-label","text":"LOẠI","textPreview":"LOẠI","textChars":4,"textLines":1,"bbox":[650,326,120,28]}
+{"kind":"textbox","id":"sh/kbitgn2h","slide":2,"name":"choice-2-text","text":"Trả lời deadline và logistics","textPreview":"Trả lời deadline và logistics","textChars":29,"textLines":1,"bbox":[650,362,500,46]}
+{"kind":"textbox","id":"sh/ja9c7i1w","slide":2,"name":"choice-2-why","text":"Sai thông tin có cost-of-error cao.","textPreview":"Sai thông tin có cost-of-error cao.","textChars":35,"textLines":1,"bbox":[650,410,480,32]}
+{"kind":"shape","id":"sh/i9gbedkb","slide":2,"name":"choice-3-rule","bbox":[620,480,8,92]}
+{"kind":"textbox","id":"sh/tgrudcjy","slide":2,"name":"choice-3-label","text":"LOẠI","textPreview":"LOẠI","textChars":4,"textLines":1,"bbox":[650,476,120,28]}
+{"kind":"textbox","id":"sh/sfitk7id","slide":2,"name":"choice-3-text","text":"Bản tin cuối ngày cho TA","textPreview":"Bản tin cuối ngày cho TA","textChars":24,"textLines":1,"bbox":[650,512,500,46]}
+{"kind":"textbox","id":"sh/7e9cb21s","slide":2,"name":"choice-3-why","text":"Cần nhiều channel và user research riêng.","textPreview":"Cần nhiều channel và user research riêng.","textChars":41,"textLines":1,"bbox":[650,560,480,32]}
+{"kind":"textbox","id":"sh/6d0bixk7","slide":2,"name":"footer-label-2","text":"User & Job","textPreview":"User & Job","textChars":10,"textLines":1,"bbox":[64,678,420,18]}
+{"kind":"textbox","id":"sh/h4buhcju","slide":2,"name":"footer-page-2","text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1160,678,56,18]}
+{"kind":"notes","id":"nt/bgyi9s","slide":2,"text":"Nêu ba hướng đã cân nhắc và lý do giữ lại ứng viên hiện tại.\nCon số pain sẽ được bổ sung sau mining/khảo sát thật.\n\n[Sources]\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/spec.md — §2 và §4\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/evidence/mining-log.md\n[/Sources]"}
+{"kind":"slide","id":"sl/ma2450","slide":3,"title":"Workflow tự động đưa bài mới vào một luồng tìm kiếm có căn cứ","textShapes":12}
+{"kind":"textbox","id":"sh/tkjmdwzq","slide":3,"name":"title","text":"Workflow tự động đưa bài mới vào một luồng tìm kiếm có căn cứ","textPreview":"Workflow tự động đưa bài mới vào một luồng tìm kiếm có căn cứ","textChars":61,"textLines":1,"bbox":[64,48,1140,66]}
+{"kind":"shape","id":"sh/6hs32h0f","slide":3,"name":"title-rule","bbox":[64,128,88,5]}
+{"kind":"textbox","id":"sh/7i14bmh0","slide":3,"name":"arrow-1","text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[400,178,50,56]}
+{"kind":"textbox","id":"sh/kfql0ri9","slide":3,"name":"arrow-2","text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[830,178,50,56]}
+{"kind":"shape","id":"sh/lgzm9czu","slide":3,"name":"node-1","bbox":[64,162,330,92]}
+{"kind":"shape","id":"sh/yd83yh03","slide":3,"name":"node-2","bbox":[450,162,370,92]}
+{"kind":"shape","id":"sh/jeh47mho","slide":3,"name":"node-3","bbox":[880,162,330,92]}
+{"kind":"textbox","id":"sh/wrqlw7id","slide":3,"name":"node-1-title","text":"01  Discord worker","textPreview":"01  Discord worker","textChars":18,"textLines":1,"bbox":[88,184,280,32]}
+{"kind":"textbox","id":"sh/xczm5czy","slide":3,"name":"node-1-body","text":"Phát hiện và làm sạch bài mới","textPreview":"Phát hiện và làm sạch bài mới","textChars":29,"textLines":1,"bbox":[88,220,280,24]}
+{"kind":"textbox","id":"sh/hsz25ori","slide":3,"name":"node-2-title","text":"02  SQLite + embedding","textPreview":"02  SQLite + embedding","textChars":22,"textLines":1,"bbox":[474,184,320,32]}
+{"kind":"textbox","id":"sh/wrqlwjax","slide":3,"name":"node-2-body","text":"Upsert chống trùng, lưu vector local","textPreview":"Upsert chống trùng, lưu vector local","textChars":36,"textLines":1,"bbox":[474,220,320,24]}
+{"kind":"textbox","id":"sh/vqhk3e9c","slide":3,"name":"node-3-title","text":"03  Hybrid search","textPreview":"03  Hybrid search","textChars":17,"textLines":1,"bbox":[904,184,280,32]}
+{"kind":"textbox","id":"sh/up83u9sr","slide":3,"name":"node-3-body","text":"50% semantic · 20% lexical · 30% quality","textPreview":"50% semantic · 20% lexical · 30% quality","textChars":40,"textLines":1,"bbox":[904,220,280,24]}
+{"kind":"shape","id":"sh/9of214r6","slide":3,"name":"Dashboard vận hành trên SQLite-frame","bbox":[152,296,976,316]}
+{"kind":"textbox","id":"sh/nmxkze90","slide":3,"name":"status","text":"23 bài · 23 vectors · 11 Discord + 12 mock","textPreview":"23 bài · 23 vectors · 11 Discord + 12 mock","textChars":42,"textLines":1,"bbox":[420,620,440,28]}
+{"kind":"textbox","id":"sh/m1ojq9sv","slide":3,"name":"footer-label-3","text":"Giải pháp","textPreview":"Giải pháp","textChars":9,"textLines":1,"bbox":[64,678,420,18]}
+{"kind":"textbox","id":"sh/l0f2x4ra","slide":3,"name":"footer-page-3","text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1160,678,56,18]}
+{"kind":"image","id":"im/nuxw3m9g","slide":3,"name":"","geometry":"roundRect","alt":"Dashboard vận hành trên SQLite","bbox":[160,304,960,300]}
+{"kind":"notes","id":"nt/ma2450","slide":3,"text":"Nhấn mạnh request tìm kiếm không kích hoạt sync; worker chạy độc lập theo interval.\nEmbedding hiện tại chạy local nên không gửi nội dung Discord ra ngoài.\n\n[Sources]\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/codebase/main.py\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/codebase/sqlite_storage.py\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/codebase/embedding_index.py\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/demo-backup/01-dashboard.png\n[/Sources]"}
+{"kind":"slide","id":"sl/gbtkmw","slide":4,"title":"26/26 case vượt quality bar đã chốt","textShapes":14}
+{"kind":"textbox","id":"sh/2h8r2dwn","slide":4,"name":"title","text":"26/26 case vượt quality bar đã chốt","textPreview":"26/26 case vượt quality bar đã chốt","textChars":35,"textLines":1,"bbox":[64,54,720,58]}
+{"kind":"shape","id":"sh/pkjax8ve","slide":4,"name":"title-rule","bbox":[64,130,88,5]}
+{"kind":"textbox","id":"sh/4ja943ut","slide":4,"name":"score","text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[64,176,310,104]}
+{"kind":"textbox","id":"sh/rm1szidk","slide":4,"name":"score-label","text":"case pass","textPreview":"case pass","textChars":9,"textLines":1,"bbox":[74,278,220,34]}
+{"kind":"textbox","id":"sh/qlsr6dcz","slide":4,"name":"metric-label-0","text":"Relevance","textPreview":"Relevance","textChars":9,"textLines":1,"bbox":[72,350,280,28]}
+{"kind":"textbox","id":"sh/d8ja1sva","slide":4,"name":"metric-value-0","text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[350,350,100,28]}
+{"kind":"shape","id":"sh/cna98nu5","slide":4,"name":"metric-rule-0","bbox":[72,384,378,2]}
+{"kind":"textbox","id":"sh/zals32dg","slide":4,"name":"metric-label-1","text":"Groundedness","textPreview":"Groundedness","textChars":12,"textLines":1,"bbox":[72,402,280,28]}
+{"kind":"textbox","id":"sh/e9cruxcv","slide":4,"name":"metric-value-1","text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[350,402,100,28]}
+{"kind":"shape","id":"sh/szqxwn6t","slide":4,"name":"metric-rule-1","bbox":[72,436,378,2]}
+{"kind":"textbox","id":"sh/d0zypsne","slide":4,"name":"metric-label-2","text":"Transparency","textPreview":"Transparency","textChars":12,"textLines":1,"bbox":[72,454,280,28]}
+{"kind":"textbox","id":"sh/qx8fudon","slide":4,"name":"metric-value-2","text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[350,454,100,28]}
+{"kind":"shape","id":"sh/ryhgnip8","slide":4,"name":"metric-rule-2","bbox":[72,488,378,2]}
+{"kind":"textbox","id":"sh/0nah0n6p","slide":4,"name":"metric-label-3","text":"Response behavior","textPreview":"Response behavior","textChars":17,"textLines":1,"bbox":[72,506,280,28]}
+{"kind":"textbox","id":"sh/1ojytsna","slide":4,"name":"metric-value-3","text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[350,506,100,28]}
+{"kind":"shape","id":"sh/e18fyxoj","slide":4,"name":"metric-rule-3","bbox":[72,540,378,2]}
+{"kind":"shape","id":"sh/f21gri54","slide":4,"name":"Guardrail từ chối câu hỏi thời tiết-frame","bbox":[522,158,696,436]}
+{"kind":"shape","id":"sh/psjyxcn6","slide":4,"name":"quality-bar","bbox":[530,610,680,42]}
+{"kind":"textbox","id":"sh/xcf618be","slide":4,"name":"quality-bar-text","text":"Bar: ≥80% relevance · 100% groundedness · không bịa post ID","textPreview":"Bar: ≥80% relevance · 100% groundedness · không bịa post ID","textChars":59,"textLines":1,"bbox":[552,620,638,24]}
+{"kind":"textbox","id":"sh/cb6ps3ut","slide":4,"name":"footer-label-4","text":"Kết quả đo","textPreview":"Kết quả đo","textChars":10,"textLines":1,"bbox":[64,678,420,18]}
+{"kind":"textbox","id":"sh/badozyt8","slide":4,"name":"footer-page-4","text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1160,678,56,18]}
+{"kind":"image","id":"im/byx0rals","slide":4,"name":"","geometry":"roundRect","alt":"Guardrail từ chối câu hỏi thời tiết","bbox":[530,166,680,420]}
+{"kind":"notes","id":"nt/gbtkmw","slide":4,"text":"Demo case ngoài phạm vi: câu hỏi thời tiết phải bị từ chối.\nNêu giới hạn: eval hiện chạy trên mock dataset cố định để lặp lại được.\n\n[Sources]\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/eval/summary.json\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/eval/results.csv\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/demo-backup/03-out-of-scope.png\n[/Sources]"}
+{"kind":"slide","id":"sl/wqxpzm","slide":5,"title":"Validation với người dùng là khoảng trống còn lại","textShapes":14}
+{"kind":"textbox","id":"sh/hgzah8ji","slide":5,"name":"title","text":"Validation với người dùng là khoảng trống còn lại","textPreview":"Validation với người dùng là khoảng trống còn lại","textChars":49,"textLines":1,"bbox":[64,54,1080,58]}
+{"kind":"shape","id":"sh/ud8rmtkr","slide":5,"name":"title-rule","bbox":[64,130,88,5]}
+{"kind":"textbox","id":"sh/vehsfy1c","slide":5,"name":"zero","text":"0 / 5","textPreview":"0 / 5","textChars":5,"textLines":1,"bbox":[72,194,300,100]}
+{"kind":"textbox","id":"sh/4jatsnit","slide":5,"name":"zero-label","text":"phiên test đã được log","textPreview":"phiên test đã được log","textChars":22,"textLines":1,"bbox":[78,292,310,38]}
+{"kind":"shape","id":"sh/5kjal8je","slide":5,"name":"honesty-box","bbox":[72,372,380,118]}
+{"kind":"textbox","id":"sh/ihsrqd0n","slide":5,"name":"honesty-text","text":"Không tạo quote giả.\nSlide này sẽ được cập nhật sau validation.","textPreview":"Không tạo quote giả. | Slide này sẽ được cập nhật sau validation.","textChars":63,"textLines":2,"bbox":[96,398,332,72]}
+{"kind":"textbox","id":"sh/3i1sji18","slide":5,"name":"task-title","text":"Mỗi phiên 10 phút cần trả lời 3 câu","textPreview":"Mỗi phiên 10 phút cần trả lời 3 câu","textChars":35,"textLines":1,"bbox":[560,184,600,40]}
+{"kind":"textbox","id":"sh/snatwni5","slide":5,"name":"q-num-0","text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[568,260,56,44]}
+{"kind":"textbox","id":"sh/do3apsja","slide":5,"name":"q-text-0","text":"Điều gì khó hiểu hoặc khó chịu nhất?","textPreview":"Điều gì khó hiểu hoặc khó chịu nhất?","textChars":36,"textLines":1,"bbox":[650,260,510,52]}
+{"kind":"shape","id":"sh/1832dsfm","slide":5,"name":"q-rule-0","bbox":[650,326,510,2]}
+{"kind":"textbox","id":"sh/g7ulkne1","slide":5,"name":"q-num-1","text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[568,362,56,44]}
+{"kind":"textbox","id":"sh/f6lkbixg","slide":5,"name":"q-text-1","text":"Bạn có tin kết quả này không? Vì sao?","textPreview":"Bạn có tin kết quả này không? Vì sao?","textChars":37,"textLines":1,"bbox":[650,362,510,52]}
+{"kind":"shape","id":"sh/e5cjidwv","slide":5,"name":"q-rule-1","bbox":[650,428,510,2]}
+{"kind":"textbox","id":"sh/pcn2hsvi","slide":5,"name":"q-num-2","text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[568,464,56,44]}
+{"kind":"textbox","id":"sh/obeloned","slide":5,"name":"q-text-2","text":"Bạn có dùng thật không? Vì sao?","textPreview":"Bạn có dùng thật không? Vì sao?","textChars":31,"textLines":1,"bbox":[650,464,510,52]}
+{"kind":"textbox","id":"sh/3a5kfixs","slide":5,"name":"validation-output","text":"Đầu ra cần có: quan sát · quote nguyên văn · mức nghiêm trọng · thay đổi","textPreview":"Đầu ra cần có: quan sát · quote nguyên văn · mức nghiêm trọng · thay đổi","textChars":72,"textLines":1,"bbox":[560,582,610,48]}
+{"kind":"textbox","id":"sh/29c3mxw7","slide":5,"name":"footer-label-5","text":"User validation","textPreview":"User validation","textChars":15,"textLines":1,"bbox":[64,678,420,18]}
+{"kind":"textbox","id":"sh/5gj258fe","slide":5,"name":"footer-page-5","text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1160,678,56,18]}
+{"kind":"notes","id":"nt/wqxpzm","slide":5,"text":"Không trình bày feedback khi chưa có dữ liệu người dùng thật.\nSau vòng test, thay slide bằng hai quote nguyên văn và một thay đổi đã làm.\n\n[Sources]\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/validation/feedback-log.md\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/02-guide.md — §4.2\n[/Sources]"}
+{"kind":"slide","id":"sl/b1u6ww","slide":6,"title":"Thêm một tuần: tăng độ chính xác trước khi mở rộng","textShapes":13}
+{"kind":"textbox","id":"sh/658zah4z","slide":6,"name":"title","text":"Thêm một tuần: tăng độ chính xác trước khi mở rộng","textPreview":"Thêm một tuần: tăng độ chính xác trước khi mở rộng","textChars":50,"textLines":1,"bbox":[64,54,1100,58]}
+{"kind":"shape","id":"sh/t8jylcna","slide":6,"name":"title-rule","bbox":[64,130,88,5]}
+{"kind":"textbox","id":"sh/s7ahcrmp","slide":6,"name":"priority-num-0","text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[76,188,74,58]}
+{"kind":"textbox","id":"sh/fa1gnm5g","slide":6,"name":"priority-title-0","text":"Multilingual neural embedding","textPreview":"Multilingual neural embedding","textChars":29,"textLines":1,"bbox":[174,188,850,42]}
+{"kind":"textbox","id":"sh/e9szeh4v","slide":6,"name":"priority-body-0","text":"Thay local hash vector để hiểu ngữ nghĩa tiếng Việt tốt hơn.","textPreview":"Thay local hash vector để hiểu ngữ nghĩa tiếng Việt tốt hơn.","textChars":60,"textLines":1,"bbox":[174,236,850,40]}
+{"kind":"shape","id":"sh/1cjypwnm","slide":6,"name":"priority-rule-0","bbox":[174,288,930,2]}
+{"kind":"textbox","id":"sh/gbahgrm1","slide":6,"name":"priority-num-1","text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[76,320,74,58]}
+{"kind":"textbox","id":"sh/ne1gr65c","slide":6,"name":"priority-title-1","text":"Quality score từ tín hiệu thật","textPreview":"Quality score từ tín hiệu thật","textChars":30,"textLines":1,"bbox":[174,320,850,42]}
+{"kind":"textbox","id":"sh/2dszi14r","slide":6,"name":"priority-body-1","text":"Hiệu chỉnh proxy engagement bằng dữ liệu quan sát được.","textPreview":"Hiệu chỉnh proxy engagement bằng dữ liệu quan sát được.","textChars":55,"textLines":1,"bbox":[174,368,850,40]}
+{"kind":"shape","id":"sh/kfalgbeh","slide":6,"name":"priority-rule-1","bbox":[174,420,930,2]}
+{"kind":"textbox","id":"sh/lgj2pgv2","slide":6,"name":"priority-num-2","text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[76,452,74,58]}
+{"kind":"textbox","id":"sh/yds3e1wr","slide":6,"name":"priority-title-2","text":"Workflow có retry và quan sát lỗi","textPreview":"Workflow có retry và quan sát lỗi","textChars":33,"textLines":1,"bbox":[174,452,850,42]}
+{"kind":"textbox","id":"sh/je1kn6dc","slide":6,"name":"priority-body-2","text":"Thêm queue, retry policy và cảnh báo cho Discord worker.","textPreview":"Thêm queue, retry policy và cảnh báo cho Discord worker.","textChars":56,"textLines":1,"bbox":[174,500,850,40]}
+{"kind":"shape","id":"sh/8jalkbut","slide":6,"name":"closing-box","bbox":[64,594,1150,62]}
+{"kind":"textbox","id":"sh/t4jmtgve","slide":6,"name":"closing","text":"Mục tiêu không phải trả lời thay bài viết — mà là đưa người học về đúng nguồn đáng đọc.","textPreview":"Mục tiêu không phải trả lời thay bài viết — mà là đưa người học về đúng nguồn đáng đọc.","textChars":87,"textLines":1,"bbox":[90,611,1098,30]}
+{"kind":"textbox","id":"sh/6hs3ilcn","slide":6,"name":"team","text":"Nguyễn Huy Nghĩa · Phạm Thế Dũng · Phạm Văn Lưu","textPreview":"Nguyễn Huy Nghĩa · Phạm Thế Dũng · Phạm Văn Lưu","textChars":47,"textLines":1,"bbox":[64,670,700,22]}
+{"kind":"textbox","id":"sh/7i1kr6d8","slide":6,"name":"page","text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1160,670,56,22]}
+{"kind":"notes","id":"nt/b1u6ww","slide":6,"text":"Chốt bằng thứ tự ưu tiên: độ chính xác, chất lượng tín hiệu, rồi độ bền vận hành.\nMỗi thành viên nhận một nhánh phù hợp với vai trò hiện tại.\n\n[Sources]\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/codebase/README.md\n- D:/Ai_Thuc_Chien/Lap/Batch03-K3-AI-Product-Hackathon/spec.md — §9\n[/Sources]"}

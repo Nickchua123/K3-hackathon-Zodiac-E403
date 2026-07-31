@@ -69,6 +69,17 @@ codebase\.venv\Scripts\python.exe eval\run_eval.py --strict
 Bộ golden set hiện có 26 case, bao gồm happy path, truy vấn tag, typo, ranking,
 ngoài phạm vi và truy vấn không có dữ liệu.
 
+## Hồ sơ demo và nộp bài
+
+- `demo-slides.pptx` và `demo-slides.pdf`: bộ slide nháp 6 trang.
+- `demo-script.md`: kịch bản demo 5 phút cho ba thành viên.
+- `demo-backup/`: ảnh tổng quan, happy path và case ngoài phạm vi.
+- `validation/feedback-log.md`: đã có danh sách 5 người dự kiến, chờ log và quote thật.
+- `evidence/mining-log.md`: template evidence chuẩn B, chờ mining dữ liệu được phép.
+- `reflection/`: ba bản nháp reflection cá nhân, chờ từng thành viên xác nhận.
+- `canvas.md`: Canvas CP1 tổng hợp từ spec hiện tại.
+- `traces/`: đã có trace một lần gọi Gemini thật bằng bài mock P001.
+
 ## Bảo mật dữ liệu
 
 - Không commit `.env`, API key, token Discord, `.venv` hoặc database runtime.

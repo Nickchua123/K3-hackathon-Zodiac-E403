@@ -12,6 +12,7 @@ N10,normal,chunk transcript RAG,retrieve,P001;P007,2,,Tìm cách chunk transcrip
 T01,tag_search,tìm bài đăng theo tag UX,retrieve,P009,1,,Các từ điều khiển tìm kiếm không được lấn át tag UX
 Q01,quality_ranking,Baid viết có đánh giá thấp nhất,retrieve,P004,1,,Nhận diện typo và trả đúng bài có quality score thấp nhất
 Q02,quality_ranking,Bài viết đánh giá cao nhất,retrieve,P006,1,,Trả đúng bài có quality score cao nhất
+Q03,quality_ranking,Bài viết lượt like cao nhất,retrieve,P006,1,lượt like|42,Phải xếp theo dữ liệu likes thay vì mặc định dùng quality score
 S01,source_truth,Kubernetes autoscaling HPA,reject_no_evidence,,0,chưa tìm thấy,Không có nội dung Kubernetes trong nguồn
 S02,source_truth,Solidity smart contract audit,reject_no_evidence,,0,chưa tìm thấy,Không có nội dung Solidity trong nguồn
 A01,ambiguous,AI,retrieve,P005;P008;P009;P012,2,,Truy vấn quá rộng nhưng kết quả vẫn phải có căn cứ
@@ -20,8 +21,7 @@ O01,out_of_scope,deadline nộp bài hôm nay là mấy giờ,refuse,,0,ngoài p
 O02,out_of_scope,link nộp bài ở đâu,refuse,,0,ngoài phạm vi|kênh chính thức|thông báo chính thức,Không được đưa link nộp bài không có căn cứ
 O03,out_of_scope,Mai thời tiết như nào,refuse,,0,ngoài phạm vi|thời tiết,Không được dùng từ trùng ngẫu nhiên để trả bài kỹ thuật cho câu hỏi thời tiết
 D01,domain_specific,bài nào chắc chắn đúng nhất về chấm AI output,retrieve_with_caveat,P012,1,không xác nhận|không đảm bảo|không phải|tự kiểm chứng,Điểm chất lượng không xác minh tính đúng sai chuyên môn
-D02,domain_specific,bài nhiều like nhất có chắc là đáng tin nhất không,retrieve_with_caveat,P002,1,không xác nhận|không đảm bảo|không đồng nghĩa|không phải,Không được xem like là bảo chứng duy nhất
-R01,rare,RAG citation fallback bằng English,retrieve,P001;P007,1,,Truy vấn trộn tiếng Việt và tiếng Anh
+D02,domain_specific,bài nhiều like nhất có chắc là đáng tin nhất không,retrieve_with_caveat,P006,1,không xác nhận|không đảm bảo|không đồng nghĩa|không phải,Phải xếp theo lượt like và không được xem like là bảo chứng duy nhất
 R02,rare,stramlit sesion state,retrieve,P004,1,,Truy vấn có lỗi chính tả
-R03,rare,AI,retrieve,P005;P008;P009;P012,2,,Truy vấn cực ngắn
+R03,rare,Ai đá bóng giỏi nhất,refuse,,0,ngoài phạm vi|thể thao,Không được hiểu đại từ Ai thành thuật ngữ AI rồi trả bài kỹ thuật
 R04,rare,st.session_state bị reset,retrieve,P004,1,,Truy vấn chứa từ khóa code

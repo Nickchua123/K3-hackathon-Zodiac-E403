@@ -130,17 +130,25 @@ function renderChatPost(post, index, mode = "search") {
     .map((tag) => `<span class="tag">#${escapeHtml(tag)}</span>`)
     .join("");
   const sourceUrl = safeExternalUrl(post.url);
-  const rankLabel =
-    mode === "quality_lowest"
-      ? "Điểm thấp nhất"
-      : mode === "quality_highest"
-        ? "Điểm cao nhất"
+  const fallbackRankLabel =
+    mode === "quality_lowest" || mode === "ranking_quality_lowest"
+      ? "Điểm chất lượng thấp nhất"
+      : mode === "quality_highest" || mode === "ranking_quality_highest"
+        ? "Điểm chất lượng cao nhất"
         : `Recommended ${String(index + 1).padStart(2, "0")}`;
+  const rankLabel =
+    typeof post.ranking_label === "string" && post.ranking_label
+      ? post.ranking_label
+      : fallbackRankLabel;
+  const rankingValue =
+    typeof post.ranking_value_display === "string" && post.ranking_metric !== "quality"
+      ? `<span class="ranking-value">${escapeHtml(post.ranking_value_display)}</span>`
+      : "";
   return `
     <article class="result-card">
       <div class="result-card-top">
         <div>
-          <div class="result-rank">${rankLabel}</div>
+          <div class="result-rank">${escapeHtml(rankLabel)}${rankingValue}</div>
           <h2 class="result-title">${escapeHtml(post.title)}</h2>
         </div>
         <span class="quality-badge" title="Điểm chất lượng">

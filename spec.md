@@ -147,11 +147,13 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | Backend + Data | Nguyễn Huy Nghĩa | Đã có SQLite schema, migration CSV, embedding, hybrid search và background sync Discord |
 | AI logic / mock AI output | Phạm Thế Dũng | Đã có mock summary/tag và module AI optional |
 | Frontend Web | Phạm Văn Lưu | Đã có giao diện split-screen FastAPI + HTML/CSS/JS |
-| Demo flow | Phạm Văn Lưu, Phạm Thế Dũng | Cần chốt script demo 5 phút |
+| Demo flow | Phạm Văn Lưu, Phạm Thế Dũng | Đã có `demo-script.md` và ảnh backup |
 | Eval/Golden set | Cả nhóm | Đã có 26 case, strict eval đạt 26/26 |
-| Validation user | Cả nhóm | Chưa có file `validation/` |
+| Validation user | Cả nhóm | Đã có 5 tên dự kiến; chờ log sử dụng thử và quote nguyên văn |
 
-- Willing users cần bổ sung: ít nhất 3 tên học viên ngoài nhóm đồng ý dùng thử trước demo.
+- Danh sách người dùng dự kiến: Nguyễn Thế Anh, Hà Duy Anh, Nguyễ Đức Sơn,
+  Nguyễn Sỹ Đức và Vũ Văn Phong. Cần xác nhận chính tả, vai trò và việc họ đồng ý
+  tham gia trước khi tính là willing users.
 - Validation CP5 đề xuất hỏi 3 câu:
   - Điều gì khó hiểu hoặc khó chịu nhất khi dùng chatbot?
   - Kết quả top 3 này bạn có tin không, vì sao?
@@ -175,6 +177,10 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | 2026-07-31 | Chuyển nguồn dữ liệu runtime từ CSV sang SQLite | Có transaction, upsert chống trùng, lịch sử sync và dễ mở rộng |
 | 2026-07-31 | Thêm local embedding và hybrid search | Tìm được bài theo ngữ nghĩa nhưng vẫn giữ match từ khóa và quality score |
 | 2026-07-31 | Chuyển Discord sync sang background workflow | Bài mới được xử lý độc lập với request của người dùng |
+| 2026-07-31 | Tạo slide nháp, demo script, ảnh backup và template artifact nộp bài | Chuẩn bị trước toàn bộ phần không cần dữ liệu người dùng thật |
+| 2026-07-31 | Viết bản nháp reflection cho 3 thành viên và thêm danh sách 5 người validation | Hoàn thiện hồ sơ có thể chuẩn bị trước nhưng không tạo feedback giả |
+| 2026-07-31 | Tạo `canvas.md` và script sinh AI trace an toàn từ bài mock | Hoàn thiện artifact CP1 và chuẩn bị bằng chứng AI thật mà không dùng dữ liệu Discord |
+| 2026-07-31 | Sửa false positive khi hỏi “Ai đá bóng giỏi nhất” | Không hiểu đại từ “Ai” thành acronym AI; từ chối câu hỏi thể thao ngoài phạm vi |
 
 ## Tình Trạng Artifact
 
@@ -194,7 +200,20 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   - `eval/run_eval.py`
   - `eval/results.csv`
   - `eval/summary.json`
-- Còn thiếu trước khi nộp:
-  - `validation/`
+  - `eval/case-sources.md`
+  - `validation/feedback-log.md` (đã có template)
+  - `evidence/mining-log.md` (đã có template)
+  - `reflection/` (đã có 3 bản nháp, chờ từng thành viên xác nhận)
+  - `traces/ai-call.template.json`
+  - `traces/ai-call-20260731.json` (Gemini thật, chỉ dùng bài mock P001)
+  - `codebase/run_ai_trace.py`
+  - `canvas.md`
+  - `demo-script.md`
+  - `demo-backup/`
+  - `demo-slides.pptx`
   - `demo-slides.pdf`
-  - `reflection/`
+- Còn thiếu dữ liệu trước khi nộp:
+  - Feedback nguyên văn từ ít nhất 5 người trong `validation/feedback-log.md`.
+  - Evidence khảo sát/mining thật trong `evidence/mining-log.md`.
+  - Ba thành viên đọc, sửa và xác nhận reflection đúng với trải nghiệm cá nhân.
+  - Mapping nguồn cho ít nhất 10 case eval phát triển từ chatlog thật.

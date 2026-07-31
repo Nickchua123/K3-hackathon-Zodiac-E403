@@ -118,14 +118,22 @@ STOPWORDS = {
 }
 
 OUT_OF_SCOPE_PATTERNS = {
+    "bong da",
+    "cau thu",
+    "champions league",
     "deadline",
+    "da bong",
     "han nop",
+    "ghi ban",
     "link nop bai",
+    "ngoai hang anh",
     "nop bai o dau",
     "lich hoc",
     "hoc phi",
+    "premier league",
     "thoi tiet",
     "du bao thoi tiet",
+    "world cup",
     "xo so",
     "gia vang",
 }
@@ -173,24 +181,83 @@ SCOPE_STOPWORDS = {
     "va",
 }
 SHORT_DOMAIN_TERMS = {"ai", "db", "js", "ml", "qa", "ui", "ux"}
-QUALITY_LOW_PATTERNS = {"diem thap", "kem nhat", "te nhat", "thap nhat"}
-QUALITY_HIGH_PATTERNS = {"cao nhat", "diem cao", "tot nhat"}
+AMBIGUOUS_DOMAIN_TERMS = {"ai"}
+AI_SCOPE_PATTERNS = {
+    "ai la gi",
+    "cong nghe ai",
+    "mo hinh ai",
+    "tri tue nhan tao",
+}
+QUALITY_LOW_PATTERNS = {"diem thap", "kem nhat", "te nhat", "thap nhat", "it nhat"}
+QUALITY_HIGH_PATTERNS = {"cao nhat", "diem cao", "tot nhat", "nhieu nhat"}
+RANKING_METRICS = {
+    "quality": {
+        "column": "quality_score",
+        "label": "Điểm chất lượng",
+        "unit": "điểm chất lượng",
+        "aliases": ("diem chat luong", "diem danh gia", "danh gia"),
+    },
+    "likes": {
+        "column": "likes",
+        "label": "Lượt like",
+        "unit": "lượt like",
+        "aliases": ("luot like", "luot thich", "like"),
+    },
+    "clicks": {
+        "column": "clicks",
+        "label": "Lượt click",
+        "unit": "lượt click",
+        "aliases": ("luot click", "luot bam", "click"),
+    },
+    "hearts": {
+        "column": "hearts",
+        "label": "Lượt thả tim",
+        "unit": "lượt thả tim",
+        "aliases": ("luot tha tim", "tha tim", "luot tim", "heart"),
+    },
+    "watch_time": {
+        "column": "watch_time_sec",
+        "label": "Thời lượng xem",
+        "unit": "giây xem",
+        "aliases": ("thoi luong xem", "watch time", "watch_time"),
+    },
+    "completion": {
+        "column": "completion_percent",
+        "label": "Tỷ lệ xem hết",
+        "unit": "% xem hết",
+        "aliases": ("ty le xem het", "xem het", "completion rate"),
+    },
+    "save_shares": {
+        "column": "save_shares",
+        "label": "Lượt lưu/chia sẻ",
+        "unit": "lượt lưu/chia sẻ",
+        "aliases": ("luot luu chia se", "luu chia se", "luot chia se", "luot luu", "save share"),
+    },
+}
 RANKING_QUERY_STOPWORDS = {
     "baid",
     "bai",
     "cao",
+    "chac",
     "chat",
     "co",
+    "dang",
     "danh",
     "diem",
     "duoc",
     "gia",
     "hang",
     "kem",
+    "khong",
+    "it",
+    "lon",
     "luong",
+    "nhieu",
     "nhat",
+    "phai",
     "te",
     "thap",
+    "tin",
     "top",
     "viet",
     "xep",
@@ -459,13 +526,33 @@ def scope_tokens(text: str) -> set[str]:
     }
 
 
+def has_explicit_ai_acronym(query: str) -> bool:
+    return bool(re.search(r"(?<!\w)AI(?!\w)", query))
+
+
+def retrieval_query_text(query: str) -> str:
+    normalized_query = normalize_rule_text(query)
+    if has_explicit_ai_acronym(query) or any(
+        pattern in normalized_query for pattern in AI_SCOPE_PATTERNS
+    ):
+        return query
+    return re.sub(r"(?i)(?<!\w)ai(?!\w)", " ", query)
+
+
 def query_has_domain_signal(query: str, df: pd.DataFrame) -> bool:
     normalized_query = normalize_rule_text(query)
     if any(pattern in normalized_query for pattern in GENERIC_DISCOVERY_PATTERNS):
         return True
+    if any(pattern in normalized_query for pattern in AI_SCOPE_PATTERNS):
+        return True
 
     query_terms = scope_tokens(query)
-    if not query_terms or df.empty:
+    explicit_ai_acronym = has_explicit_ai_acronym(query)
+    if "ai" in query_terms and not explicit_ai_acronym:
+        query_terms.remove("ai")
+    if not query_terms:
+        return explicit_ai_acronym
+    if df.empty:
         return False
 
     corpus_terms: set[str] = set()
@@ -484,16 +571,48 @@ def query_has_domain_signal(query: str, df: pd.DataFrame) -> bool:
         for term in matched_terms
         if len(term) >= 3 or term in SHORT_DOMAIN_TERMS
     }
-    return bool(meaningful_matches & strong_domain_terms) or len(meaningful_matches) >= 2
+    non_ambiguous_matches = meaningful_matches - AMBIGUOUS_DOMAIN_TERMS
+    if (
+        bool(non_ambiguous_matches & strong_domain_terms)
+        or len(non_ambiguous_matches) >= 2
+    ):
+        return True
+
+    subject_terms = {
+        term
+        for term in query_terms - AMBIGUOUS_DOMAIN_TERMS
+        if len(term) >= 3 or term in SHORT_DOMAIN_TERMS
+    }
+    return explicit_ai_acronym and not subject_terms
 
 
-def detect_quality_ranking_intent(query: str) -> str | None:
+def detect_ranking_direction(query: str) -> str | None:
     normalized_query = normalize_rule_text(query)
     if any(pattern in normalized_query for pattern in QUALITY_LOW_PATTERNS):
         return "lowest"
+    if re.search(r"\b(?:it|thap|kem|te)\b(?:\s+\w+){0,3}\s+nhat\b", normalized_query):
+        return "lowest"
     if any(pattern in normalized_query for pattern in QUALITY_HIGH_PATTERNS):
         return "highest"
+    if re.search(r"\b(?:cao|nhieu|lon|tot)\b(?:\s+\w+){0,3}\s+nhat\b", normalized_query):
+        return "highest"
     return None
+
+
+def detect_quality_ranking_intent(query: str) -> str | None:
+    """Backward-compatible alias for existing imports and eval helpers."""
+    return detect_ranking_direction(query)
+
+
+def detect_ranking_metric(query: str) -> str:
+    normalized_query = normalize_rule_text(query)
+    for metric_key, config in RANKING_METRICS.items():
+        if any(
+            re.search(rf"\b{re.escape(alias)}\b", normalized_query)
+            for alias in config["aliases"]
+        ):
+            return metric_key
+    return "quality"
 
 
 def requested_ranking_limit(query: str) -> int:
@@ -504,8 +623,12 @@ def requested_ranking_limit(query: str) -> int:
     return min(10, max(1, int(match.group(1)))) if match else 1
 
 
-def ranking_subject_terms(query: str, df: pd.DataFrame) -> set[str]:
-    query_terms = scope_tokens(query) - RANKING_QUERY_STOPWORDS
+def ranking_subject_terms(
+    query: str,
+    df: pd.DataFrame,
+    ignored_terms: set[str] | None = None,
+) -> set[str]:
+    query_terms = scope_tokens(query) - RANKING_QUERY_STOPWORDS - (ignored_terms or set())
     if not query_terms or df.empty:
         return set()
 
@@ -516,9 +639,20 @@ def ranking_subject_terms(query: str, df: pd.DataFrame) -> set[str]:
     return query_terms & strong_terms
 
 
-def rank_posts_by_quality(df: pd.DataFrame, query: str, intent: str) -> pd.DataFrame:
+def rank_posts(
+    df: pd.DataFrame,
+    query: str,
+    direction: str,
+    metric_key: str = "quality",
+) -> pd.DataFrame:
     ranked = df.copy()
-    subject_terms = ranking_subject_terms(query, ranked)
+    metric = RANKING_METRICS[metric_key]
+    ignored_terms = {
+        term
+        for alias in metric["aliases"]
+        for term in scope_tokens(alias)
+    }
+    subject_terms = ranking_subject_terms(query, ranked, ignored_terms)
     if subject_terms:
         searchable_columns = ["title", "topic", "mock_tags"]
 
@@ -528,22 +662,69 @@ def rank_posts_by_quality(df: pd.DataFrame, query: str, intent: str) -> pd.DataF
 
         ranked = ranked[ranked.apply(matches_subject, axis=1)]
 
-    ranked["match_score"] = ranked["quality_score"]
-    return ranked.sort_values("quality_score", ascending=intent == "lowest")
+    metric_column = str(metric["column"])
+    ranked["match_score"] = pd.to_numeric(
+        ranked[metric_column],
+        errors="coerce",
+    ).fillna(0)
+    return ranked.sort_values(
+        [metric_column, "quality_score"],
+        ascending=[direction == "lowest", False],
+    )
 
 
-def quality_ranking_answer(intent: str, rows: list[pd.Series]) -> str:
+def rank_posts_by_quality(df: pd.DataFrame, query: str, intent: str) -> pd.DataFrame:
+    """Backward-compatible wrapper for callers that explicitly rank by quality."""
+    return rank_posts(df, query, intent, "quality")
+
+
+def ranking_value_display(row: pd.Series, metric_key: str) -> str:
+    metric = RANKING_METRICS[metric_key]
+    value = float(row[str(metric["column"])])
+    if metric_key == "quality":
+        return f"{value:.1f}/100"
+    if metric_key == "completion":
+        return f"{value:.0f}%"
+    return f"{int(value)} {metric['unit']}"
+
+
+def ranking_label(metric_key: str, direction: str) -> str:
+    direction_label = "cao nhất" if direction == "highest" else "thấp nhất"
+    return f"{RANKING_METRICS[metric_key]['label']} {direction_label}"
+
+
+def ranking_answer(
+    direction: str,
+    metric_key: str,
+    rows: list[pd.Series],
+) -> str:
     if not rows:
         return "Mình chưa tìm thấy bài phù hợp với yêu cầu xếp hạng này."
 
-    direction = "cao nhất" if intent == "highest" else "thấp nhất"
+    direction_label = "cao nhất" if direction == "highest" else "thấp nhất"
+    metric_label = str(RANKING_METRICS[metric_key]["label"]).lower()
     if len(rows) == 1:
         row = rows[0]
-        return (
-            f'Bài có điểm chất lượng {direction} là "{row["title"]}" '
-            f'với {float(row["quality_score"]):.1f}/100.'
+        answer = (
+            f'Bài có {metric_label} {direction_label} là "{row["title"]}" '
+            f'với {ranking_value_display(row, metric_key)}.'
         )
-    return f"Đây là {len(rows)} bài có điểm chất lượng {direction}, đã được sắp xếp theo điểm."
+    else:
+        answer = (
+            f"Đây là {len(rows)} bài có {metric_label} {direction_label}, "
+            f"đã được sắp xếp theo {metric_label}."
+        )
+    if metric_key != "quality":
+        answer += (
+            f" {RANKING_METRICS[metric_key]['label']} chỉ phản ánh một tín hiệu tương tác, "
+            "không đồng nghĩa bài viết đúng hoặc đáng tin nhất."
+        )
+    return answer
+
+
+def quality_ranking_answer(intent: str, rows: list[pd.Series]) -> str:
+    """Backward-compatible wrapper for the quality-score answer."""
+    return ranking_answer(intent, "quality", rows)
 
 
 def search_posts(df: pd.DataFrame, query: str) -> pd.DataFrame:
@@ -560,14 +741,15 @@ def search_posts(df: pd.DataFrame, query: str) -> pd.DataFrame:
         ranked["semantic_score"] = 0.0
         return ranked.sort_values("match_score", ascending=False)
 
-    query_terms = tokenize(query)
+    effective_query = retrieval_query_text(query)
+    query_terms = tokenize(effective_query)
     if not query_terms:
         ranked["match_score"] = ranked["quality_score"] * 0.35
         ranked["lexical_score"] = 0.0
         ranked["semantic_score"] = 0.0
         return ranked.sort_values("match_score", ascending=False)
 
-    query_vector = embed_text(query)
+    query_vector = embed_text(effective_query)
 
     def row_scores(row: pd.Series) -> pd.Series:
         haystack = " ".join(
@@ -592,7 +774,8 @@ def search_posts(df: pd.DataFrame, query: str) -> pd.DataFrame:
         )
         strong_terms = tokenize(strong_haystack)
         strong_coverage = len(query_terms & strong_terms) / max(1, len(query_terms))
-        phrase_bonus = 10.0 if query.lower().strip() in haystack.lower() else 0.0
+        phrase_target = effective_query.lower().strip()
+        phrase_bonus = 10.0 if phrase_target and phrase_target in haystack.lower() else 0.0
         lexical_score = min(
             100.0,
             coverage * 65.0 + strong_coverage * 25.0 + phrase_bonus,
@@ -881,10 +1064,15 @@ def filter_posts_by_topic(df: pd.DataFrame, topic: str) -> pd.DataFrame:
     return df[matches].copy()
 
 
-def post_to_result(row: pd.Series, reason: str | None = None) -> dict[str, Any]:
+def post_to_result(
+    row: pd.Series,
+    reason: str | None = None,
+    ranking_metric: str | None = None,
+    ranking_direction: str | None = None,
+) -> dict[str, Any]:
     tags = [tag.strip() for tag in str(row["mock_tags"]).split(";") if tag.strip()]
     quality_reason = reason or fallback_reason("", row)
-    return {
+    result = {
         "post_id": row["post_id"],
         "title": row["title"],
         "author": row["author"],
@@ -901,6 +1089,13 @@ def post_to_result(row: pd.Series, reason: str | None = None) -> dict[str, Any]:
         "tags": tags,
         "score_detail": score_detail(row),
     }
+    if ranking_metric and ranking_direction:
+        metric = RANKING_METRICS[ranking_metric]
+        result["ranking_metric"] = ranking_metric
+        result["ranking_label"] = ranking_label(ranking_metric, ranking_direction)
+        result["ranking_value"] = float(row[str(metric["column"])])
+        result["ranking_value_display"] = ranking_value_display(row, ranking_metric)
+    return result
 
 
 def build_chat_response(
@@ -909,44 +1104,45 @@ def build_chat_response(
     top_k: int | None = None,
     exact_topic: str | None = None,
 ) -> dict[str, Any]:
-    ranking_intent = detect_quality_ranking_intent(query)
+    ranking_direction = detect_ranking_direction(query)
+    ranking_metric = detect_ranking_metric(query) if ranking_direction else None
     if is_out_of_scope_query(query):
         return {
             "answer": (
                 "Câu hỏi này nằm ngoài phạm vi tìm kiếm bài viết kỹ thuật của Quality Hub. "
-                "Với thông tin như thời tiết hoặc logistics, hãy kiểm tra kênh hoặc "
-                "thông báo chính thức để có dữ liệu chính xác."
+                "Với thông tin như thể thao, thời tiết hoặc logistics, hãy kiểm tra "
+                "nguồn hoặc kênh thông báo chính thức để có dữ liệu chính xác."
             ),
             "results": [],
             "mode": "out_of_scope",
         }
 
-    if not exact_topic and not ranking_intent and not query_has_domain_signal(query, df):
+    if not exact_topic and not ranking_direction and not query_has_domain_signal(query, df):
         return {"answer": fallback_answer(query, []), "results": [], "mode": "no_results"}
 
     if exact_topic:
         ranked = filter_posts_by_topic(df, exact_topic)
-        ranked["match_score"] = ranked["quality_score"]
-        ranked = ranked.sort_values(
-            "quality_score",
-            ascending=ranking_intent == "lowest",
-        )
-    elif ranking_intent:
-        ranked = rank_posts_by_quality(df, query, ranking_intent)
+        if ranking_direction and ranking_metric:
+            ranked = rank_posts(ranked, query, ranking_direction, ranking_metric)
+        else:
+            ranked["match_score"] = ranked["quality_score"]
+            ranked = ranked.sort_values("quality_score", ascending=False)
+    elif ranking_direction and ranking_metric:
+        ranked = rank_posts(df, query, ranking_direction, ranking_metric)
     else:
         ranked = search_posts(df, query)
 
     if top_k is not None:
         requested_limit = top_k
-    elif ranking_intent:
+    elif ranking_direction:
         requested_limit = requested_ranking_limit(query)
     else:
         requested_limit = get_top_k_results()
     result_limit = min(10, max(1, requested_limit))
     top_rows = [row for _, row in ranked.head(result_limit).iterrows()]
-    if ranking_intent:
+    if ranking_direction and ranking_metric:
         rag_response = {
-            "answer": quality_ranking_answer(ranking_intent, top_rows),
+            "answer": ranking_answer(ranking_direction, ranking_metric, top_rows),
             "reasons": {
                 str(row["post_id"]): fallback_reason(query, row)
                 for row in top_rows
@@ -956,14 +1152,30 @@ def build_chat_response(
         rag_response = generate_rag_response(query, top_rows)
     reasons = rag_response.get("reasons", {})
     results = [
-        post_to_result(row, str(reasons.get(str(row["post_id"])) or fallback_reason(query, row)))
+        post_to_result(
+            row,
+            str(reasons.get(str(row["post_id"])) or fallback_reason(query, row)),
+            ranking_metric,
+            ranking_direction,
+        )
         for row in top_rows
     ]
     answer = str(rag_response.get("answer") or fallback_answer(query, top_rows))
     if results and QUALITY_DISCLAIMER not in answer:
         answer = f"{answer} {QUALITY_DISCLAIMER}"
-    mode = f"quality_{ranking_intent}" if ranking_intent else ("topic" if exact_topic else "search")
-    return {"answer": answer, "results": results, "mode": mode}
+    mode = (
+        f"ranking_{ranking_metric}_{ranking_direction}"
+        if ranking_direction and ranking_metric
+        else ("topic" if exact_topic else "search")
+    )
+    response = {"answer": answer, "results": results, "mode": mode}
+    if ranking_direction and ranking_metric:
+        response["ranking"] = {
+            "metric": ranking_metric,
+            "label": RANKING_METRICS[ranking_metric]["label"],
+            "direction": ranking_direction,
+        }
+    return response
 
 
 def build_content_overview(df: pd.DataFrame) -> dict[str, Any]:
