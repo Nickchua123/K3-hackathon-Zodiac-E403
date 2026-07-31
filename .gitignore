@@ -32,3 +32,8 @@ temp/
 
 # Runtime data synced from real Discord
 codebase/discord_posts.csv
+
+# SQLite runtime storage
+codebase/data/*.db
+codebase/data/*.db-shm
+codebase/data/*.db-wal

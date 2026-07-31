@@ -3,46 +3,178 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Trợ lý tổng hợp bài đăng chất lượng</title>
+    <meta
+      name="description"
+      content="Trợ lý AI tìm kiếm và tổng hợp những bài đăng Discord chất lượng."
+    />
+    <title>Quality Hub — AI Knowledge Assistant</title>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
+    <div class="page-glow page-glow-one" aria-hidden="true"></div>
+    <div class="page-glow page-glow-two" aria-hidden="true"></div>
+
     <main class="app-shell">
-      <section class="chat-panel" aria-label="Chatbot tìm bài đăng chất lượng">
-        <header class="app-header">
-          <div>
-            <p class="eyebrow">Discord Quality Digest</p>
-            <h1>Trợ lý tổng hợp bài đăng chất lượng</h1>
-            <p class="subtitle">Hỏi một chủ đề, bot trả top 3 bài liên quan có điểm chất lượng cao nhất.</p>
-          </div>
-          <div class="status-card" id="statusCard">
-            <span class="status-dot" aria-hidden="true"></span>
-            <span id="statusText">Đang kiểm tra dữ liệu...</span>
-          </div>
-        </header>
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Quality Hub — Trang chủ">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5 15.5 9.2 6l3.1 6.2L15.2 8l3.8 7.5" />
+              <path d="M4 18h16" />
+            </svg>
+          </span>
+          <span>
+            <strong>Quality Hub</strong>
+            <small>AI Knowledge Assistant</small>
+          </span>
+        </a>
 
-        <div class="suggestions" aria-label="Câu hỏi gợi ý">
-          <button type="button" data-query="tìm bài hay về RAG và prompt">RAG và prompt</button>
-          <button type="button" data-query="bài viết về golden set và đánh giá chatbot">eval chatbot</button>
-          <button type="button" data-query="thiết kế UX khi AI không chắc">UX khi AI không chắc</button>
+        <div
+          class="status-pill"
+          id="statusCard"
+          role="status"
+          aria-live="polite"
+          data-state="loading"
+        >
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="statusText">Đang kết nối kho tri thức...</span>
         </div>
+      </header>
 
-        <section class="messages" id="messages" aria-live="polite">
-          <article class="message assistant">
-            <div class="bubble">Bạn muốn tìm bài đăng chất lượng về chủ đề gì?</div>
-          </article>
+      <section class="workspace" aria-label="Không gian khám phá tri thức">
+        <section class="chat-column" aria-labelledby="chatTitle">
+          <header class="chat-header">
+            <div>
+              <div class="section-kicker">
+                <span class="sparkle" aria-hidden="true">✦</span>
+                AI-powered discovery
+              </div>
+              <h1 id="chatTitle">Hỏi kho tri thức của cộng đồng</h1>
+              <p>Tìm đúng bài viết, hiểu nhanh nội dung và luôn kiểm chứng được nguồn gốc.</p>
+            </div>
+            <div class="model-chip" title="Tìm kiếm có căn cứ trên dữ liệu Discord">
+              <span aria-hidden="true"></span>
+              Grounded AI
+            </div>
+          </header>
+
+          <div class="suggestions" aria-label="Câu hỏi gợi ý">
+            <button type="button" data-query="tìm bài hay về RAG và prompt">
+              <span aria-hidden="true">⌁</span> RAG &amp; Prompt
+            </button>
+            <button type="button" data-query="bài viết về golden set và đánh giá chatbot">
+              <span aria-hidden="true">✓</span> AI Evaluation
+            </button>
+            <button type="button" data-query="thiết kế UX khi AI không chắc">
+              <span aria-hidden="true">◇</span> Trustworthy UX
+            </button>
+          </div>
+
+          <section class="messages" id="messages" aria-live="polite" aria-busy="false">
+            <article class="message assistant welcome-message">
+              <div class="avatar ai-avatar" aria-hidden="true">✦</div>
+              <div class="message-content">
+                <div class="message-label">Quality AI</div>
+                <div class="bubble">
+                  <p>
+                    Chào bạn! Mình có thể tìm và tóm tắt những bài đăng kỹ thuật chất lượng
+                    từ cộng đồng. Hãy chọn một gợi ý hoặc hỏi chủ đề bạn đang quan tâm.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <form class="composer" id="chatForm" aria-label="Hỏi trợ lý AI">
+            <label class="sr-only" for="queryInput">Nhập chủ đề kỹ thuật cần tìm</label>
+            <div class="composer-field">
+              <span class="composer-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3a8 8 0 0 0-5.7 13.6L5 21l4.4-1.3A8 8 0 1 0 12 3Z" />
+                  <path d="M8.5 11.5h7M8.5 8.5h4.5" />
+                </svg>
+              </span>
+              <input
+                id="queryInput"
+                name="query"
+                autocomplete="off"
+                maxlength="500"
+                required
+                placeholder="Ask about specific technical topics..."
+              />
+              <span class="input-hint">Enter</span>
+            </div>
+            <button type="submit" class="send-button" id="submitButton" aria-label="Gửi câu hỏi">
+              <span>Gửi</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m5 12 14-7-4.5 14-3-5.5L5 12Z" />
+                <path d="m11.5 13.5 3-3" />
+              </svg>
+            </button>
+          </form>
         </section>
 
-        <form class="composer" id="chatForm">
-          <input
-            id="queryInput"
-            name="query"
-            autocomplete="off"
-            placeholder="Nhập chủ đề bạn muốn tìm..."
-            aria-label="Nhập chủ đề bạn muốn tìm"
-          />
-          <button type="submit">Gửi</button>
-        </form>
+        <aside class="content-column" aria-label="Tổng quan nội dung">
+          <div class="overview-heading">
+            <div>
+              <p class="section-kicker">Content overview</p>
+              <h2>Khám phá nổi bật</h2>
+            </div>
+            <button class="refresh-button" id="refreshOverview" type="button" aria-label="Làm mới tổng quan">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 6v5h-5" />
+                <path d="M4 18v-5h5" />
+                <path d="M6.1 9a7 7 0 0 1 11.7-2.6L20 11M4 13l2.2 4.6A7 7 0 0 0 17.9 15" />
+              </svg>
+            </button>
+          </div>
+
+          <section class="dashboard-card top-posts-card" aria-labelledby="topPostsTitle">
+            <header class="card-heading">
+              <div>
+                <span class="card-icon trend-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="m4 16 5-5 4 3 7-8" />
+                    <path d="M15 6h5v5" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 id="topPostsTitle">Top Quality Posts</h3>
+                  <p>Những bài nổi bật tuần này</p>
+                </div>
+              </div>
+              <span class="week-badge">This week</span>
+            </header>
+            <div class="top-posts-list" id="topPostsList" aria-live="polite">
+              <div class="skeleton-row"></div>
+              <div class="skeleton-row"></div>
+              <div class="skeleton-row"></div>
+            </div>
+          </section>
+
+          <section class="dashboard-card topics-card" aria-labelledby="hotTopicsTitle">
+            <header class="card-heading">
+              <div>
+                <span class="card-icon topic-icon" aria-hidden="true">#</span>
+                <div>
+                  <h3 id="hotTopicsTitle">Hot Topics</h3>
+                  <p>Chạm để hỏi AI về chủ đề</p>
+                </div>
+              </div>
+            </header>
+            <div class="topic-cloud" id="hotTopics" aria-live="polite">
+              <span class="topic-placeholder">Đang tổng hợp chủ đề...</span>
+            </div>
+          </section>
+
+          <section class="ranking-note" aria-label="Cách hệ thống xếp hạng">
+            <span class="note-icon" aria-hidden="true">◎</span>
+            <div>
+              <strong>Xếp hạng minh bạch</strong>
+              <p>Kết hợp mức độ liên quan với 6 tín hiệu chất lượng, không chỉ dựa vào lượt thích.</p>
+            </div>
+          </section>
+        </aside>
       </section>
     </main>
 

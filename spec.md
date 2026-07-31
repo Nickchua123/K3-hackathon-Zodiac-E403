@@ -10,7 +10,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 - Problem statement: Học viên khó tìm lại bài Discord chất lượng vì bài viết phân tán, tiêu đề không đồng nhất, tìm kiếm theo keyword dễ bỏ sót, và tín hiệu like đơn lẻ không đủ phản ánh giá trị thật của bài.
 - Evidence hiện có trong repo:
   - Dữ liệu mock: `codebase/mock_posts.csv` có 12 bài viết mẫu phủ các chủ đề RAG, Prompt Engineering, Evaluation, Product, UX, Search, Frontend.
-  - Dữ liệu Discord thật đã sync local: `codebase/discord_posts.csv` hiện có 11 record từ Discord thật.
+  - Dữ liệu Discord thật đã sync local: `codebase/discord_posts.csv` hiện có 11 record từ Discord thật; khi chạy app các record được upsert vào SQLite.
   - Tín hiệu thực tế từ Discord chủ yếu gồm nội dung, author, reaction và link gốc. Các trường click/watch-time/completion/save-share trong prototype là proxy/ước tính để demo scoring.
   - Lưu ý cần bổ sung trước khi nộp chính thức: log khảo sát hoặc mining chuẩn A/B theo rubric. Hiện repo chưa có `validation/` hoặc log khảo sát 20 người.
 - Ví dụ bài hiện có:
@@ -61,7 +61,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   - Không tự đăng/xóa/sửa nội dung trên Discord.
   - Không dùng dữ liệu cá nhân ngoài dữ liệu đã được phép hoặc dữ liệu giả.
 - Mức prototype: Working prototype.
-  - Thật: web FastAPI chạy được, đọc `mock_posts.csv`, tự sync `discord_posts.csv`, search/ranking, scoring, link gốc, chi tiết điểm.
+  - Thật: web FastAPI chạy được; SQLite lưu bài viết, embedding và lịch sử sync; background worker tự lấy bài Discord mới; hybrid search/ranking trả link gốc và chi tiết điểm.
   - Mock/proxy: click, watch time, completion rate, save/share cho dữ liệu Discord là proxy vì Discord API không cung cấp trực tiếp các trường này.
   - AI thật: `ai_analyzer.py` và `discord_bot.py --with-ai` hỗ trợ gọi Gemini/OpenAI để tạo summary/topic/tag. Mặc định không bật để tránh tốn API và tránh đưa dữ liệu thật lên API ngoài khi chưa cần.
 - Automation: Conditional.
@@ -77,7 +77,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | Nguyên tắc | Áp cụ thể vào prototype |
 |---|---|
 | G1 - Làm rõ hệ thống làm được gì | Header và ô chat nói rõ: hỏi một chủ đề, bot trả top 3 bài liên quan có điểm chất lượng cao. |
-| G2 - Làm rõ mức độ tin cậy | Mỗi kết quả hiển thị điểm chất lượng, tag, reason và link gốc để user tự kiểm chứng. |
+| G2 - Làm rõ mức độ tin cậy | Mỗi kết quả hiển thị điểm chất lượng, tag và link gốc để user tự kiểm chứng. |
 | G10 - Thu hẹp phạm vi khi nghi ngờ | Nếu không có match, chatbot trả "chưa tìm thấy bài phù hợp" thay vì tạo bài giả. |
 | G11 - Giải thích vì sao | Có bảng "Xem chi tiết chấm điểm" nêu tín hiệu, dữ liệu gốc, trọng số, đóng góp. |
 | PAIR - Feedback + Control | User luôn có thể bỏ qua kết quả, đổi query, hoặc mở bài gốc để tự kiểm chứng. |
@@ -118,7 +118,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 - Chiều chất lượng cần đo:
   - Relevance: kết quả có liên quan chủ đề query.
   - Usefulness: bài có nội dung đủ dài/có tín hiệu chất lượng.
-  - Groundedness: kết quả phải đến từ `mock_posts.csv` hoặc `discord_posts.csv`, có link gốc.
+  - Groundedness: kết quả phải đến từ SQLite đã nhập từ nguồn mock/Discord hợp lệ và có link gốc.
   - Transparency: user xem được lý do/chi tiết điểm.
   - Safety: không bịa bài và không trả lời logistics ngoài phạm vi.
 - Định nghĩa pass/fail:
@@ -126,7 +126,7 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   - Pass groundedness nếu 100% kết quả có `post_id` và `url`.
   - Pass transparency nếu 100% kết quả có quality score và bảng chi tiết điểm.
   - Pass failure handling nếu query không có dữ liệu trả thông báo không tìm thấy.
-- Golden set cần tạo trong `eval/`:
+- Golden set hiện có trong `eval/golden_set.csv`:
   - 8-10 case thường: RAG, prompt, evaluation, UX, search, Streamlit, demo, security.
   - Ít nhất 2 case cho mỗi lớp chỗ khó: nguồn sự thật, mơ hồ, ngoài phạm vi, đặc thù domain.
   - 2-4 case hiếm: query trộn tiếng Việt/Anh, typo, query quá ngắn, query có từ khóa code.
@@ -134,20 +134,21 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   - Đạt khi >=80% case pass relevance.
   - 100% case phải pass groundedness.
   - 100% kết quả hiển thị được chi tiết chấm điểm.
-  - 0 case bịa bài ngoài CSV.
+  - 0 case bịa bài ngoài dữ liệu nguồn đã lưu trong SQLite.
 - Kết quả chạy hiện tại:
-  - Chưa có file `eval/` và chưa có bảng kết quả chạy trọn bộ. Cần bổ sung trước khi nộp.
+  - Đã chạy 26/26 case bằng `eval/run_eval.py`; relevance, groundedness, transparency và response behavior đều đạt 100%.
+  - Kết quả chi tiết nằm trong `eval/results.csv`, bản tóm tắt nằm trong `eval/summary.json`.
 
 ## §8. Phân Công & Kế Hoạch
 
 | Phần việc | Người phụ trách | Trạng thái |
 |---|---|---|
 | Product idea & problem framing | Phạm Thế Dũng | Đã có trong README, cần bổ sung evidence thật |
-| Backend + Data | Nguyễn Huy Nghĩa | Đã có sync Discord, CSV schema, scoring |
+| Backend + Data | Nguyễn Huy Nghĩa | Đã có SQLite schema, migration CSV, embedding, hybrid search và background sync Discord |
 | AI logic / mock AI output | Phạm Thế Dũng | Đã có mock summary/tag và module AI optional |
-| Frontend Web | Phạm Văn Lưu | Đã có FastAPI + HTML/CSS/JS chatbot |
+| Frontend Web | Phạm Văn Lưu | Đã có giao diện split-screen FastAPI + HTML/CSS/JS |
 | Demo flow | Phạm Văn Lưu, Phạm Thế Dũng | Cần chốt script demo 5 phút |
-| Eval/Golden set | Cả nhóm | Chưa có file `eval/` |
+| Eval/Golden set | Cả nhóm | Đã có 26 case, strict eval đạt 26/26 |
 | Validation user | Cả nhóm | Chưa có file `validation/` |
 
 - Willing users cần bổ sung: ít nhất 3 tên học viên ngoài nhóm đồng ý dùng thử trước demo.
@@ -170,6 +171,10 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
 | 2026-07-30 | Thêm tự động sync Discord theo interval | Không muốn phải chạy lệnh sync thủ công |
 | 2026-07-30 | Thêm chi tiết chấm điểm từng bài | Tăng minh bạch và giải thích vì sao bài được xếp hạng |
 | 2026-07-30 | Chuyển giao diện chính sang FastAPI + HTML/CSS/JS | Tránh phụ thuộc giao diện Streamlit, tạo trải nghiệm web thật hơn |
+| 2026-07-30 | Thiết kế lại frontend thành AI Chat + Content Overview | Kết nối liền mạch giữa hỏi đáp, bài nổi bật và khám phá chủ đề |
+| 2026-07-31 | Chuyển nguồn dữ liệu runtime từ CSV sang SQLite | Có transaction, upsert chống trùng, lịch sử sync và dễ mở rộng |
+| 2026-07-31 | Thêm local embedding và hybrid search | Tìm được bài theo ngữ nghĩa nhưng vẫn giữ match từ khóa và quality score |
+| 2026-07-31 | Chuyển Discord sync sang background workflow | Bài mới được xử lý độc lập với request của người dùng |
 
 ## Tình Trạng Artifact
 
@@ -179,11 +184,17 @@ Loại: [ ] Tối ưu tính năng có sẵn  [x] Tính năng mới
   - `codebase/static/style.css`
   - `codebase/static/app.js`
   - `codebase/discord_bot.py`
+  - `codebase/embedding_index.py`
+  - `codebase/sqlite_storage.py`
+  - `codebase/manage_data.py`
   - `codebase/mock_posts.csv`
   - `codebase/discord_posts.csv`
   - `codebase/README.md`
+  - `eval/golden_set.csv`
+  - `eval/run_eval.py`
+  - `eval/results.csv`
+  - `eval/summary.json`
 - Còn thiếu trước khi nộp:
-  - `eval/`
   - `validation/`
   - `demo-slides.pdf`
   - `reflection/`

@@ -1,45 +1,45 @@
-# Tro ly Tong hop bai dang chat luong
+# Trợ lý Tổng hợp bài đăng chất lượng
 
-Prototype hackathon cho bai toan tong hop, xep hang va tim kiem cac bai dang huu ich trong Discord khoa hoc.
+Prototype hackathon giúp học viên tìm lại các bài chia sẻ đáng đọc trong Discord
+bằng chatbot tìm kiếm kết hợp và bảng xếp hạng chất lượng.
 
-## Thong tin nhom
+## Thành viên
 
-| Thanh vien | Ma HV | Vai tro chinh |
+| Thành viên | Mã HV | Vai trò chính |
 |---|---|---|
-| Nguyen Huy Nghia | 2A202601943 | Backend + Data |
-| Pham The Dung | 2A202601985 | AI Engineer / Leader |
-| Pham Van Luu | 2A202601857 | Frontend |
+| Nguyễn Huy Nghĩa | 2A202601943 | Backend + Data |
+| Phạm Thế Dũng | 2A202601985 | AI Engineer / Leader |
+| Phạm Văn Lưu | 2A202601857 | Frontend |
 
-## Phan cong theo tung phan
+## Chức năng hiện có
 
-| Phan viec | Nguoi phu trach | Mo ta |
-|---|---|---|
-| Product idea & problem framing | Pham The Dung | Chot lat cat demo, mo ta user pain, xac dinh pham vi prototype. |
-| Backend + Data | Nguyen Huy Nghia | Thiet ke schema bai dang mock, metric engagement, xu ly cong thuc tinh diem chat luong. |
-| AI logic / Mock AI output | Pham The Dung | Dinh nghia output tom tat, tag chu de, hanh vi tim kiem tu nhien dang mock. |
-| Frontend Web | Pham Van Luu | Xay giao dien chatbot bang FastAPI + HTML/CSS/JS: nhap chu de, hien top 3 bai dang phu hop. |
-| Scoring model | Nguyen Huy Nghia, Pham The Dung | Chuan hoa cac chi so ve thang 0-100 va tinh weighted score theo cong thuc da chot. |
-| Demo flow | Pham Van Luu, Pham The Dung | Chuan bi luong demo chatbot: hoi chu de, xem top 3 bai dang, mo link goc. |
-| Repo & documentation | Nguyen Huy Nghia | Cap nhat README, requirements, gitignore va huong dan chay local. |
+- Giao diện split-screen FastAPI + HTML/CSS/JS, không còn phụ thuộc Streamlit.
+- Chatbot nhận câu hỏi chủ đề và trả các bài phù hợp kèm summary, tag, điểm và link gốc.
+- SQLite là nguồn dữ liệu runtime cho bài viết, embedding và lịch sử đồng bộ.
+- Tự migrate dữ liệu mock/Discord CSV vào SQLite theo cơ chế upsert.
+- Hybrid search kết hợp semantic embedding, lexical match và quality score.
+- Guardrail từ chối câu hỏi ngoài phạm vi thay vì trả bài khớp từ khóa yếu.
+- Intent riêng cho “bài đánh giá cao nhất/thấp nhất”.
+- Background workflow tự lấy và xử lý bài Discord mới theo interval.
+- Top Quality Posts và Hot Topics đều được tính từ cùng dữ liệu đã lọc trong SQLite.
 
-## Prototype hien tai
-
-Thu muc prototype: `codebase/`
-
-Chuc nang da co:
-
-- Chatbot nhan cau hoi chu de va tra top 3 bai dang phu hop nhat.
-- Tinh diem chat luong theo cong thuc:
+## Luồng hệ thống
 
 ```text
-Click 20% + Like 15% + Tim 20% + Thoi luong xem 25% + Ty le xem het 10% + Luu/Chia se 10%
+Discord
+   ↓
+Background worker phát hiện bài mới
+   ↓
+Làm sạch → Tóm tắt → Gắn chủ đề/tag → Chấm điểm
+   ↓
+SQLite + local embeddings
+   ↓
+Người dùng đặt câu hỏi
+   ↓
+Hybrid search → xếp hạng → trả link Discord gốc
 ```
 
-- Chuan hoa tung chi so ve thang 0-100 truoc khi tinh diem tong.
-- Tim kiem tu nhien dang mock, vi du: `tim bai hay ve RAG va prompt`.
-- Hien summary, tags, ly do nen doc, diem chat luong va link goc cho tung ket qua.
-
-## Cach chay
+## Cách chạy
 
 ```powershell
 cd codebase
@@ -47,21 +47,32 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Sau khi chay, mo:
+Mở `http://127.0.0.1:8000`. Xem cấu hình chi tiết, cách sync và reindex trong
+[`codebase/README.md`](codebase/README.md).
+
+## Công thức điểm chất lượng
 
 ```text
-http://127.0.0.1:8000
+Click 20% + Like 15% + Tim 20% + Thời lượng xem 25%
++ Tỷ lệ xem hết 10% + Lưu/Chia sẻ 10%
 ```
 
-## Pham vi mock
+Mỗi chỉ số được chuẩn hóa về 0–100 trước khi tính điểm tổng. Điểm chất lượng là tín
+hiệu ưu tiên bài đáng đọc, không phải xác nhận kiến thức trong bài đúng tuyệt đối.
 
-- Du lieu bai dang la du lieu ao trong `codebase/mock_posts.csv`.
-- Neu cau hinh Discord bot trong `codebase/.env`, app tu dong sync du lieu that vao `codebase/discord_posts.csv` khi mo web app.
-- Summary va tags la mock AI output, chua goi AI that.
-- Tim kiem tu nhien hien dung keyword overlap + quality score, chua dung embedding.
-- Link Discord la link gia lap de demo giao dien.
+## Kiểm thử
 
-## Ghi chu bao mat
+```powershell
+codebase\.venv\Scripts\python.exe eval\run_eval.py --strict
+```
 
-- Khong commit API key, file `.env`, `.streamlit/secrets.toml` hoac moi truong ao `.venv`.
-- Neu dung du lieu Discord that trong cac vong sau, can an danh va chi trich dan phan toi thieu can thiet trong repo nop bai.
+Bộ golden set hiện có 26 case, bao gồm happy path, truy vấn tag, typo, ranking,
+ngoài phạm vi và truy vấn không có dữ liệu.
+
+## Bảo mật dữ liệu
+
+- Không commit `.env`, API key, token Discord, `.venv` hoặc database runtime.
+- Hybrid embedding mặc định chạy local và không gửi nội dung ra ngoài.
+- Chỉ bật `RAG_INCLUDE_DISCORD_DATA=true` khi đã được phép dùng provider ngoài.
+- Các tín hiệu click/watch-time/completion/save-share của dữ liệu Discord hiện vẫn
+  là proxy phục vụ prototype vì Discord API không cung cấp trực tiếp.

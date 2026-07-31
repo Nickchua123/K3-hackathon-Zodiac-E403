@@ -1,6 +1,6 @@
 """
 ai_analyzer.py - Module AI phân tích, tóm tắt và đánh giá bài đăng Discord.
-Hỗ trợ tự động đọc API Key từ file .env / .streamlit/secrets.toml / Biến môi trường.
+Hỗ trợ tự động đọc API Key từ file .env hoặc biến môi trường.
 """
 
 from __future__ import annotations
@@ -16,43 +16,60 @@ from typing import Any
 
 APP_DIR = Path(__file__).resolve().parent
 ROOT_DIR = APP_DIR.parent
+DEFAULT_GEMINI_MODEL = "gemini-3.5-flash-lite"
+DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
 
 
-def get_api_key() -> str | None:
-    """Tự động đọc Gemini/OpenAI API Key từ nhiều nguồn (Environment, .env, secrets.toml)."""
-    key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or os.environ.get("OPENAI_API_KEY")
-    if key:
-        return key
+def read_config_values(path: Path) -> dict[str, str]:
+    if not path.exists():
+        return {}
 
-    for env_file in [APP_DIR / ".env", ROOT_DIR / ".env"]:
-        if env_file.exists():
-            with open(env_file, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith("GEMINI_API_KEY=") or line.startswith("GOOGLE_API_KEY="):
-                        return line.split("=", 1)[1].strip(" '\"")
-                    if line.startswith("OPENAI_API_KEY="):
-                        return line.split("=", 1)[1].strip(" '\"")
-
-    secrets_path = APP_DIR / ".streamlit" / "secrets.toml"
-    if secrets_path.exists():
-        with open(secrets_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if "GEMINI_API_KEY" in line or "GOOGLE_API_KEY" in line or "OPENAI_API_KEY" in line:
-                    parts = line.split("=", 1)
-                    if len(parts) == 2:
-                        return parts[1].strip(" '\"\n")
-
-    return None
+    values: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        values[key.strip()] = value.strip().strip("'").strip('"')
+    return values
 
 
-def _call_gemini_api(api_key: str, prompt: str) -> str:
-    """Gọi Google Gemini 1.5 Flash API bằng HTTP REST."""
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+def get_config_value(key: str, default: str | None = None) -> str | None:
+    environment_value = os.environ.get(key)
+    if environment_value:
+        return environment_value
+
+    config_paths = [
+        APP_DIR / ".env",
+        ROOT_DIR / ".env",
+    ]
+    for path in config_paths:
+        value = read_config_values(path).get(key)
+        if value:
+            return value
+    return default
+
+
+def get_api_key(provider: str) -> str | None:
+    """Đọc đúng API key của provider, không dùng chéo key giữa Gemini và OpenAI."""
+    if provider == "gemini":
+        return get_config_value("GEMINI_API_KEY") or get_config_value("GOOGLE_API_KEY")
+    if provider == "openai":
+        return get_config_value("OPENAI_API_KEY")
+    raise ValueError(f"Unsupported AI provider: {provider}")
+
+
+def is_configured_key(key: str | None) -> bool:
+    return bool(key and key not in {"your_gemini_api_key_here", "your_openai_api_key_here"})
+
+
+def _call_gemini_api(api_key: str, prompt: str, model_name: str) -> str:
+    """Gọi Google Gemini API bằng HTTP REST."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"},
+        "generationConfig": {"responseMimeType": "application/json"},
     }
 
     req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
@@ -67,15 +84,15 @@ def _call_gemini_api(api_key: str, prompt: str) -> str:
     raise RuntimeError("Khong nhan duoc phan hoi hop le tu Gemini API")
 
 
-def _call_openai_api(api_key: str, prompt: str) -> str:
-    """Gọi OpenAI GPT-4o-mini API bằng HTTP REST."""
+def _call_openai_api(api_key: str, prompt: str, model_name: str) -> str:
+    """Gọi OpenAI API bằng HTTP REST."""
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}",
     }
     payload = {
-        "model": "gpt-4o-mini",
+        "model": model_name,
         "messages": [
             {"role": "system", "content": "You are an expert AI assistant that responds in valid JSON format."},
             {"role": "user", "content": prompt},
@@ -136,13 +153,26 @@ def _heuristic_fallback(title: str, content: str) -> dict[str, Any]:
     }
 
 
-def analyze_post_content(title: str, content: str, api_key: str | None = None) -> dict[str, Any]:
+def analyze_post_content(
+    title: str,
+    content: str,
+    api_key: str | None = None,
+    provider: str | None = None,
+) -> dict[str, Any]:
     """
     Phân tích bài viết bằng AI thật (Gemini/OpenAI) hoặc Fallback nếu không có Key.
     """
-    key = api_key or get_api_key()
+    selected_provider = str(provider or get_config_value("AI_PROVIDER", "auto") or "auto").strip().lower()
+    if selected_provider not in {"auto", "gemini", "openai"}:
+        fallback = _heuristic_fallback(title, content)
+        fallback["provider"] = f"Rule Fallback (AI_PROVIDER không hợp lệ: {selected_provider})"
+        return fallback
 
-    if not key or key in ["your_gemini_api_key_here", "your_openai_api_key_here"]:
+    gemini_key = api_key if api_key and selected_provider in {"auto", "gemini"} else get_api_key("gemini")
+    openai_key = api_key if api_key and selected_provider == "openai" else get_api_key("openai")
+    has_gemini = selected_provider in {"auto", "gemini"} and is_configured_key(gemini_key)
+    has_openai = selected_provider in {"auto", "openai"} and is_configured_key(openai_key)
+    if not (has_gemini or has_openai):
         return _heuristic_fallback(title, content)
 
     prompt = f"""
@@ -167,26 +197,33 @@ Hãy phản hồi DUY NHẤT một chuỗi JSON có cấu trúc như sau:
 }}
 """
 
-    try:
-        raw_response = _call_gemini_api(key, prompt)
-        data = json.loads(raw_response)
-        data["is_real_ai"] = True
-        data["provider"] = "Google Gemini 1.5 Flash 🤖"
-        return data
-    except Exception:
-        pass
+    failures: list[str] = []
+    gemini_model = str(get_config_value("GEMINI_MODEL", DEFAULT_GEMINI_MODEL) or DEFAULT_GEMINI_MODEL)
+    openai_model = str(get_config_value("OPENAI_MODEL", DEFAULT_OPENAI_MODEL) or DEFAULT_OPENAI_MODEL)
 
-    try:
-        raw_response = _call_openai_api(key, prompt)
-        data = json.loads(raw_response)
-        data["is_real_ai"] = True
-        data["provider"] = "OpenAI GPT-4o-mini 🤖"
-        return data
-    except Exception:
-        pass
+    if has_gemini:
+        try:
+            raw_response = _call_gemini_api(str(gemini_key), prompt, gemini_model)
+            data = json.loads(raw_response)
+            data["is_real_ai"] = True
+            data["provider"] = f"Google {gemini_model} 🤖"
+            return data
+        except Exception as exc:
+            failures.append(f"Gemini: {type(exc).__name__}")
+
+    if has_openai:
+        try:
+            raw_response = _call_openai_api(str(openai_key), prompt, openai_model)
+            data = json.loads(raw_response)
+            data["is_real_ai"] = True
+            data["provider"] = f"OpenAI {openai_model} 🤖"
+            return data
+        except Exception as exc:
+            failures.append(f"OpenAI: {type(exc).__name__}")
 
     fallback_res = _heuristic_fallback(title, content)
-    fallback_res["provider"] = "Rule Fallback (Mạng/Key yếu)"
+    failure_summary = ", ".join(failures) if failures else "không có provider khả dụng"
+    fallback_res["provider"] = f"Rule Fallback ({failure_summary})"
     return fallback_res
 
 
